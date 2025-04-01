@@ -10,173 +10,7 @@
     <meta property="og:url" content="https://flanked.xyz">
     <meta property="og:type" content="website">
     <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
-    <style>
-        body {
-            background-color: black;
-            color: rgba(255, 255, 255, 0.8); /* Slight grey color for all text */
-            text-align: center;
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-        }
-        .container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-        }
-        .ascii-art {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-        }
-        .ascii-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: auto;
-            z-index: 3; /* Make sure ASCII overlay is above the background images */
-            opacity: 1.0;
-            pointer-events: none;
-        }
-        .background-images {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1; /* Set background images below the overlay */
-        }
-        .background-images img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .menu {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 4;
-        }
-        .menu a {
-            color: rgba(255, 255, 255, 0.8); /* Grey text color */
-            text-decoration: none;
-            margin: 0 10px;
-            cursor: pointer;
-            font-size: 1.1em;
-        }
-        .menu a:hover {
-            color: white; /* Hover effect for menu items */
-        }
-        .members {
-            position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 4;
-            font-size: 1.1em; /* Normal member text size */
-        }
-        .members a {
-            color: rgba(255, 255, 255, 0.8); /* Grey text color */
-            text-decoration: none;
-            margin: 0 10px;
-            cursor: pointer;
-        }
-        .members a::after {
-            content: ' ·';
-            font-size: 0.6em; /* Smaller dots */
-            color: rgba(255, 255, 255, 0.8);
-        }
-        .members a:last-child::after {
-            content: '';
-        }
-        .info-text {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.2em;
-            opacity: 0.7;
-            z-index: 4;
-        }
-        .telegram-link {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: none;
-            color: white;
-            z-index: 4;
-        }
-        .background-animation {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        .star {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 6px;
-            user-select: none;
-            pointer-events: none;
-            animation: starTwinkle linear infinite;
-        }
-        @keyframes starTwinkle {
-            0% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.3); }
-            100% { opacity: 0.5; transform: scale(1); }
-        }
-    </style>
-    <script>
-        function createStars() {
-            const container = document.getElementById("background");
-            for (let i = 0; i < 100; i++) {
-                let star = document.createElement("div");
-                star.className = "star";
-                star.innerHTML = "✦";
-                star.style.left = Math.random() * window.innerWidth + "px";
-                star.style.top = Math.random() * window.innerHeight + "px";
-                star.style.animationDuration = (Math.random() * 2 + 1) + "s";
-                star.style.animationDelay = Math.random() * 2 + "s";
-                container.appendChild(star);
-            }
-        }
-
-        function changeContent(imageName, titleText, telegramUrl, infoText) {
-            // Update the background images
-            const backgroundImages = document.querySelectorAll('.background-images img');
-            backgroundImages.forEach((img) => {
-                img.style.opacity = 0; // Hide all images first
-            });
-
-            // Show the relevant image
-            let newImage = document.querySelector(`img[src="${imageName}"]`);
-            if (newImage) {
-                newImage.style.opacity = 1; // Show the selected image
-            }
-
-            document.title = titleText;
-            document.getElementById("infoText").innerText = infoText;
-            let telegramLink = document.getElementById("telegramLink");
-            let telegramAnchor = document.getElementById("telegramAnchor");
-            telegramAnchor.href = telegramUrl;
-            telegramAnchor.innerText = telegramUrl;
-            telegramLink.style.display = "block";
-        }
-
-        window.onbeforeunload = function() {
-            return "Come back loser!";
-        };
-    </script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="background-animation" id="background"></div>
@@ -194,15 +28,16 @@
             <a href="#">Soon!</a>
         </div>
         <div class="members">
-            <a onclick="changeContent('flank.png', '@instakill; Flank', 'https://t.me/flank155', 'Still Alive.')">Flank</a>
-            <a onclick="changeContent('decoy.png', '@instakill; Decoy', 'https://t.me/decoy9', '#1 Fed dodger.')">Decoy</a>
-            <a onclick="changeContent('dorm.gif', '@instakill; Dorm', 'https://t.me/dormsex', '#Muslim bitch')">Dorm</a>
+            <a onclick="changeContent('flank.png', '@instakill; Flank', 'https://t.me/flank155', 'Still Alive.', 'flank')">Flank</a>
+            <a onclick="changeContent('decoy.png', '@instakill; Decoy', 'https://t.me/decoy9', '#1 Fed dodger.', 'decoy')">Decoy</a>
+            <a onclick="changeContent('dorm.gif', '@instakill; Dorm', 'https://t.me/dormsex', '#Muslim bitch', 'dorm')">Dorm</a>
         </div>
         <div class="telegram-link" id="telegramLink">
             <a id="telegramAnchor" href="#" target="_blank">t.me/</a>
         </div>
-        <div class="info-text" id="infoText">@Instakill - your favorite</div>
+        <div class="info-text" id="infoText">@Instakill - lmfao</div>
     </div>
-    <script>createStars();</script>
+    <script src="index.js"></script>
+    <script src="music.js"></script>
 </body>
 </html>
