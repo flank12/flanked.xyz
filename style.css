@@ -34,6 +34,7 @@ body {
     background-color: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
     transition: background-color 0.3s, transform 0.3s;
+    z-index: 12;
 }
 
 .members a:hover {
