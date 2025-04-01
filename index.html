@@ -13,7 +13,7 @@
     <style>
         body {
             background-color: black;
-            color: white;
+            color: rgba(255, 255, 255, 0.8); /* Slight grey color for all text */
             text-align: center;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
@@ -38,7 +38,7 @@
             width: 100%;
             height: auto;
             z-index: 1;
-            opacity: 0.7;
+            opacity: 0.9;
             pointer-events: none;
         }
         .menu {
@@ -48,16 +48,26 @@
             transform: translateX(-50%);
             z-index: 3;
         }
+        .menu a {
+            color: rgba(255, 255, 255, 0.8); /* Grey text color */
+            text-decoration: none;
+            margin: 0 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+        .menu a:hover {
+            color: white; /* Hover effect for menu items */
+        }
         .members {
             position: absolute;
             top: 50px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 3;
-            font-size: 1.2em; /* Slightly smaller font */
+            font-size: 1.1em; /* Normal member text size */
         }
-        .menu a, .members a {
-            color: white;
+        .members a {
+            color: rgba(255, 255, 255, 0.8); /* Grey text color */
             text-decoration: none;
             margin: 0 10px;
             cursor: pointer;
@@ -65,7 +75,7 @@
         .members a::after {
             content: ' ·';
             font-size: 0.6em; /* Smaller dots */
-            color: white;
+            color: rgba(255, 255, 255, 0.8);
         }
         .members a:last-child::after {
             content: '';
@@ -151,9 +161,9 @@
             <a href="#">Soon!</a>
         </div>
         <div class="members">
-            <a onclick="changeContent('flank.png', '@instakill; Flank', 'https://t.me/flank155', 'Still alive.')">Flank</a>
-            <a onclick="changeContent('decoy.png', '@instakill; Decoy', 'https://t.me/decoy9', '#1 fed dodger.')">Decoy</a>
-            <a onclick="changeContent('dorm.png', '@instakill; Dorm', 'https://t.me/dormsex', '#sigma sigma boy sigma boy.')">Dorm</a>
+            <a onclick="changeContent('flank.png', '@instakill; Flank', 'https://t.me/flank155', 'Still Alive.')">Flank</a>
+            <a onclick="changeContent('decoy.png', '@instakill; Decoy', 'https://t.me/decoy9', '#1 Fed dodger.')">Decoy</a>
+            <a onclick="changeContent('dorm.png', '@instakill; Dorm', 'https://t.me/dormsex', '#Muslim bitch')">Dorm</a>
         </div>
         <div class="telegram-link" id="telegramLink">
             <a id="telegramAnchor" href="#" target="_blank">t.me/</a>
