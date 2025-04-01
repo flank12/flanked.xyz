@@ -41,12 +41,19 @@
             opacity: 1.0;
             pointer-events: none;
         }
-        .background-images img {
+        .background-images {
             position: absolute;
-            z-index: 1; /* Set background images below the overlay */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            z-index: 1; /* Set background images below the overlay */
+        }
+        .background-images img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
         .menu {
             position: absolute;
@@ -143,8 +150,20 @@
                 container.appendChild(star);
             }
         }
+
         function changeContent(imageName, titleText, telegramUrl, infoText) {
-            document.getElementById("asciiImage").src = imageName;
+            // Update the background images
+            const backgroundImages = document.querySelectorAll('.background-images img');
+            backgroundImages.forEach((img) => {
+                img.style.opacity = 0; // Hide all images first
+            });
+
+            // Show the relevant image
+            let newImage = document.querySelector(`img[src="${imageName}"]`);
+            if (newImage) {
+                newImage.style.opacity = 1; // Show the selected image
+            }
+
             document.title = titleText;
             document.getElementById("infoText").innerText = infoText;
             let telegramLink = document.getElementById("telegramLink");
@@ -153,6 +172,7 @@
             telegramAnchor.innerText = telegramUrl;
             telegramLink.style.display = "block";
         }
+
         window.onbeforeunload = function() {
             return "Come back loser!";
         };
@@ -162,10 +182,10 @@
     <div class="background-animation" id="background"></div>
     <div class="container">
         <div class="background-images">
-            <img src="flank.png" alt="Flank Image">
-            <img src="decoy.png" alt="Decoy Image">
-            <img src="dorm.png" alt="Dorm Image">
-            <img src="monopoly.gif" alt="Monopoly GIF">
+            <img src="flank.png" alt="Flank Image" style="opacity: 0;">
+            <img src="decoy.png" alt="Decoy Image" style="opacity: 0;">
+            <img src="dorm.gif" alt="Dorm Image" style="opacity: 0;">
+            <img src="monopoly.gif" alt="Monopoly GIF" style="opacity: 1;"> <!-- Default visible image -->
         </div>
         <img class="ascii-overlay" src="fake-ascii.png" alt="ASCII Overlay">
         <div class="menu">
@@ -176,7 +196,7 @@
         <div class="members">
             <a onclick="changeContent('flank.png', '@instakill; Flank', 'https://t.me/flank155', 'Still Alive.')">Flank</a>
             <a onclick="changeContent('decoy.png', '@instakill; Decoy', 'https://t.me/decoy9', '#1 Fed dodger.')">Decoy</a>
-            <a onclick="changeContent('dorm.png', '@instakill; Dorm', 'https://t.me/dormsex', '#Muslim bitch')">Dorm</a>
+            <a onclick="changeContent('dorm.gif', '@instakill; Dorm', 'https://t.me/dormsex', '#Muslim bitch')">Dorm</a>
         </div>
         <div class="telegram-link" id="telegramLink">
             <a id="telegramAnchor" href="#" target="_blank">t.me/</a>
