@@ -13,25 +13,30 @@ function createStars() {
 }
 
 function changeContent(imageName, titleText, telegramUrl, infoText, audioId) {
-
-    const backgroundImages = document.querySelectorAll('.background-images img');
+    // Hide all images first
+    const backgroundImages = document.querySelectorAll('.bg-image');
     backgroundImages.forEach((img) => {
-        img.style.opacity = 0; 
+        img.style.display = 'none';
     });
 
+    // Show the relevant image
     let newImage = document.querySelector(`img[src="${imageName}"]`);
     if (newImage) {
-        newImage.style.opacity = 1; 
+        newImage.style.display = 'block'; // Show the selected image
     }
 
+    // Update the page title and info text
     document.title = titleText;
     document.getElementById("infoText").innerText = infoText;
 
+    // Update Telegram link
     let telegramLink = document.getElementById("telegramLink");
     let telegramAnchor = document.getElementById("telegramAnchor");
     telegramAnchor.href = telegramUrl;
     telegramAnchor.innerText = telegramUrl;
     telegramLink.style.display = "block";
+
+    // Play the selected audio
     playAudio(audioId);
 }
 
