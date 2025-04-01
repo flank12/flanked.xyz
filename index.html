@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@instakill</title>
+    <meta property="og:title" content="Instakill">
+    <meta property="og:description" content="bigmoney nigga">
+    <meta property="og:image" content="https://c22w.site.com/img/hung.png">
+    <meta property="og:url" content="https://c22w.site">
+    <meta property="og:type" content="website">
+    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   </body>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>@instakill</title>
+     <style>
+         body {
+             background-color: black;
+             color: white;
+             text-align: center;
+             font-family: monospace;
+             overflow: hidden;
+         }
+         .ascii-art {
+             position: relative;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             height: 60vh;
+         }
+         .ascii-overlay {
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+             opacity: 0.5;
+             pointer-events: none;
+         }
+         .menu {
+             margin-top: 20px;
+         }
+         .menu a {
+             color: white;
+             text-decoration: none;
+             margin: 0 10px;
+             cursor: pointer;
+         }
+         .members {
+             margin-top: 20px;
+             position: relative;
+             z-index: 2;
+             font-size: 1.2em;
+         }
+         .members a {
+             color: lightgray;
+             text-decoration: none;
+             margin: 0 5px;
+             cursor: pointer;
+         }
+         .members a:hover {
+             color: white;
+         }
+         .members a::after {
+             content: ' •';
+             font-size: 0.8em;
+             color: white;
+         }
+         .members a:last-child::after {
+             content: '';
+         }
+         .background-animation {
+             position: absolute;
+             width: 100%;
+             height: 100%;
+             top: 0;
+             left: 0;
+             z-index: -1;
+             overflow: hidden;
+             pointer-events: none;
+         }
+         .star {
+             position: absolute;
+             color: rgba(255, 255, 255, 0.8);
+             font-size: 6px;
+             user-select: none;
+             pointer-events: none;
+             animation: starTwinkle linear infinite;
+         }
+         @keyframes starTwinkle {
+             0% { opacity: 0.5; transform: scale(1); }
+             50% { opacity: 1; transform: scale(1.3); }
+             100% { opacity: 0.5; transform: scale(1); }
+         }
+         .telegram-link {
+             margin-top: 10px;
+             display: none;
+             color: white;
+         }
+     </style>
+     <script>
+         window.onbeforeunload = function() {
+             return "Come back loser!";
+         };
+     </script>
+ </head>
+ <body>
+     <div class="menu">
+         <a href="#">About</a>
+         <a href="#">Telegram</a>
+         <a href="#">Soon!</a>
+     </div>
+     <div class="members">
+         <a onclick="changeContent('flank.png', '@instakill; flank', 'https://t.me/flank155')">flank</a>
+         <a onclick="changeContent('decoy.png', '@instakill; decoy', 'https://t.me/decoy9')">decoy</a>
+         <a onclick="changeContent('dorm.png', '@instakill; dorm', 'https://t.me/dormsex')">dorm</a>
+     </div>
+     <div class="ascii-art">
+         <img id="asciiImage" src="image.png" alt="ASCII Art">
+         <img class="ascii-overlay" src="overlay.png" alt="ASCII Overlay">
+     </div>
+     <div class="telegram-link" id="telegramLink">
+         <a id="telegramAnchor" href="#" target="_blank">t.me/</a>
+     </div>
+     <div class="background-animation" id="background"></div>
+     <script>
+         function createStars() {
+             const container = document.getElementById("background");
+             for (let i = 0; i < 100; i++) {
+                 let star = document.createElement("div");
+                 star.className = "star";
+                 star.innerHTML = "✦";
+                 star.style.left = Math.random() * window.innerWidth + "px";
+                 star.style.top = Math.random() * window.innerHeight + "px";
+                 star.style.animationDuration = (Math.random() * 2 + 1) + "s";
+                 star.style.animationDelay = Math.random() * 2 + "s";
+                 container.appendChild(star);
+             }
+         }
+         function changeContent(imageName, titleText, telegramUrl) {
+             document.getElementById("asciiImage").src = imageName;
+             document.title = titleText;
+             let telegramLink = document.getElementById("telegramLink");
+             let telegramAnchor = document.getElementById("telegramAnchor");
+             telegramAnchor.href = telegramUrl;
+             telegramAnchor.innerText = telegramUrl;
+             telegramLink.style.display = "block";
+         }
+         createStars();
+     </script>
+ </body>
+ </html>
