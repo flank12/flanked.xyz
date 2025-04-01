@@ -1,43 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> 
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@Instakill</title>
-    <meta property="og:title" content="@Instakill">
-    <meta property="og:description" content="">
-    <meta property="og:image" content="https://flanked.xyz/img/hung.png">
-    <meta property="og:url" content="https://flanked.xyz">
-    <meta property="og:type" content="website">
-    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
+    <title>@instakill</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="background-animation" id="background"></div>
     <div class="container">
-        <div class="background-images">
-            <img src="flank.png" alt="Flank Image" class="bg-image" style="display: none;">
-            <img src="decoy.png" alt="Decoy Image" class="bg-image" style="display: none;">
-            <img src="dorm.gif" alt="Dorm Image" class="bg-image" style="display: none;">
-            <img src="monopoly.gif" alt="Monopoly GIF" class="bg-image" style="display: block;"> <!-- Default visible image -->
-        </div>
-        <img class="ascii-overlay" src="fake-ascii.png" alt="ASCII Overlay">
-        <div class="menu">
-            <a href="#">About</a>
-            <a href="#">Telegram</a>
-            <a href="#">Soon!</a>
-        </div>
         <div class="members">
-            <a onclick="changeContent('flank.png', '@instakill; Flank', 'https://t.me/flank155', 'Still Alive.', 'flank')">Flank</a>
-            <a onclick="changeContent('decoy.png', '@instakill; Decoy', 'https://t.me/decoy9', '#1 Fed dodger.', 'decoy')">Decoy</a>
-            <a onclick="changeContent('dorm.gif', '@instakill; Dorm', 'https://t.me/dormsex', '#Muslim bitch', 'dorm')">Dorm</a>
+            <a href="#" class="member" onclick="playAudio('flank-audio.mp3')">Flank</a>
+            <a href="#" class="member" onclick="playAudio('decoy-audio.mp3')">Decoy</a>
+            <a href="#" class="member" onclick="playAudio('dorm-audio.mp3')">Dorm</a>
         </div>
-        <div class="telegram-link" id="telegramLink">
-            <a id="telegramAnchor" href="#" target="_blank">t.me/</a>
-        </div>
-        <div class="info-text" id="infoText">@Instakill - Lmfao </div>
+        <audio id="audioPlayer" preload="auto"></audio>
     </div>
-    <script src="index.js"></script>
-    <script src="music.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
