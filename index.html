@@ -37,16 +37,23 @@
             transform: translate(-50%, -50%);
             width: 100%;
             height: auto;
-            z-index: 1;
-            opacity: 0.9;
+            z-index: 3; /* Make sure ASCII overlay is above the background images */
+            opacity: 1.0;
             pointer-events: none;
+        }
+        .background-images img {
+            position: absolute;
+            z-index: 1; /* Set background images below the overlay */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .menu {
             position: absolute;
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 3;
+            z-index: 4;
         }
         .menu a {
             color: rgba(255, 255, 255, 0.8); /* Grey text color */
@@ -63,7 +70,7 @@
             top: 50px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 3;
+            z-index: 4;
             font-size: 1.1em; /* Normal member text size */
         }
         .members a {
@@ -87,7 +94,7 @@
             transform: translateX(-50%);
             font-size: 1.2em;
             opacity: 0.7;
-            z-index: 3;
+            z-index: 4;
         }
         .telegram-link {
             position: absolute;
@@ -96,7 +103,7 @@
             transform: translateX(-50%);
             display: none;
             color: white;
-            z-index: 3;
+            z-index: 4;
         }
         .background-animation {
             position: absolute;
@@ -154,6 +161,12 @@
 <body>
     <div class="background-animation" id="background"></div>
     <div class="container">
+        <div class="background-images">
+            <img src="flank.png" alt="Flank Image">
+            <img src="decoy.png" alt="Decoy Image">
+            <img src="dorm.png" alt="Dorm Image">
+            <img src="monopoly.gif" alt="Monopoly GIF">
+        </div>
         <img class="ascii-overlay" src="fake-ascii.png" alt="ASCII Overlay">
         <div class="menu">
             <a href="#">About</a>
@@ -169,9 +182,6 @@
             <a id="telegramAnchor" href="#" target="_blank">t.me/</a>
         </div>
         <div class="info-text" id="infoText">@Instakill - your favorite</div>
-        <div class="ascii-art">
-            <img id="asciiImage" src="monopoly.gif" alt="ASCII Art">
-        </div>
     </div>
     <script>createStars();</script>
 </body>
