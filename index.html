@@ -8,14 +8,14 @@
     <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
     <style>
         body {
-    background: url('girl.png') no-repeat center center fixed;
-    background-size: cover;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-align: center;
+            background: url('girl.png') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
         }
         .overlay {
             position: fixed;
@@ -80,13 +80,26 @@
             <a href="https://t.me/dorm">t.me/dorm</a>
         </div>
     </div>
+    
     <audio id="audio0" src="audio.mp3"></audio>
     <audio id="audio1" src="audio2.mp3"></audio>
     <audio id="audio2" src="audio3.mp3"></audio>
+
     <script>
+        let currentAudio = null;
+
         function playAudio(index) {
             const audios = [document.getElementById('audio0'), document.getElementById('audio1'), document.getElementById('audio2')];
-            audios[index].play();
+
+       
+            if (currentAudio && !currentAudio.paused) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
+     
+            currentAudio = audios[index];
+            currentAudio.play();
         }
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -101,7 +114,7 @@
                     } else {
                         clearInterval(interval);
                     }
-                }, 100);
+                }, 150); // Slowed from 100ms to 150ms
             });
         });
     </script>
