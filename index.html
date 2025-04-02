@@ -114,9 +114,16 @@
                     } else {
                         clearInterval(interval);
                     }
-                }, 173); // Slowed from 100ms to 150ms
+                }, 173); 
             });
         });
+        document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+        document.title = "Come back Loser!";
+    } else {
+        document.title = "@instakill"; 
+    }
+});
     </script>
 </body>
 </html>
