@@ -107,28 +107,34 @@
     <audio id="audio2" src="audio3.mp3"></audio>
 
     <script>
-        const audios = [
+    const audios = [
         document.getElementById('audio0'),
         document.getElementById('audio1'),
         document.getElementById('audio2')
     ];
 
     const backgrounds = [
-        "url('2_2.gif')",
-        "url('bgdecoy.png')",
-        "url('girl.png')"
+        "url('bg1.jpg')", // flank background
+        "url('bg2.jpg')", // decoy background
+        "url('bg3.jpg')"  // dorm background
+    ];
+
+    const titles = [
+        "instakill; flank",
+        "instakill; decoy",
+        "instakill; dorm"
     ];
 
     let currentAudio = null;
-    const container = document.querySelector('.container');
-    const cards = document.querySelectorAll('.member-card');
+    let hoverTimeout = null;
 
-    cards.forEach((card, index) => {
+    document.querySelectorAll('.member-card').forEach((card, index) => {
         card.addEventListener('mouseenter', () => {
             // Change background
             document.body.style.backgroundImage = backgrounds[index];
             document.body.style.backgroundSize = "cover";
             document.body.style.backgroundPosition = "center";
+            document.body.style.transition = "background-image 0.5s ease-in-out";
 
             // Play audio
             if (currentAudio && !currentAudio.paused) {
@@ -138,58 +144,38 @@
             currentAudio = audios[index];
             currentAudio.play();
 
-            // Visual focus
-            container.classList.add('focused');
-            cards.forEach((c, i) => {
-                if (i === index) {
-                    c.classList.add('focused');
-                    c.classList.remove('dimmed');
-                } else {
-                    c.classList.add('dimmed');
-                    c.classList.remove('focused');
-                }
-            });
+            // Change title
+            document.title = titles[index];
         });
 
         card.addEventListener('mouseleave', () => {
-            // Reset background
-            document.body.style.backgroundImage = "url('girl.png')";
+            clearTimeout(hoverTimeout);
+            hoverTimeout = setTimeout(() => {
+                if (!document.querySelector(':hover').closest('.member-card')) {
+        
+                    document.body.style.backgroundImage = "url('girl.png')";
 
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-            }
+                
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
 
-            // Reset visual
-            container.classList.remove('focused');
-            cards.forEach(c => {
-                c.classList.remove('dimmed');
-                c.classList.remove('focused');
-            });
+           
+                    document.title = "@instakill";
+                }
+            }, 100); 
         });
     });
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll('.binary-text').forEach(element => {
-                let originalText = element.getAttribute('data-text');
-                let binary = "010101010101".repeat(originalText.length).slice(0, originalText.length);
-                let index = 0;
-                let interval = setInterval(() => {
-                    if (index < originalText.length) {
-                        element.textContent = originalText.substring(0, index + 1) + binary.substring(index + 1);
-                        index++;
-                    } else {
-                        clearInterval(interval);
-                    }
-                }, 173); 
-            });
-        });
-        document.addEventListener("visibilitychange", function () {
-    if (document.hidden) {
-        document.title = "Come back Loser!";
-    } else {
-        document.title = "@instakill"; 
-    }
-});
+
+    // Bonus: also keep your tab-switch title joke
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            document.title = "Come back Loser!";
+        } else {
+            document.title = "@instakill";
+        }
+    });
     </script>
 </body>
 </html>
