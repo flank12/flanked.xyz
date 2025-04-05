@@ -56,6 +56,27 @@
             color: white;
             text-decoration: none;
         }
+        .container.focused {
+    justify-content: center;
+    gap: 0;
+}
+
+.member-card {
+    transition: all 0.5s ease;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.member-card.dimmed {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+}
+
+.member-card.focused {
+    transform: scale(1.1);
+    z-index: 3;
+}
     </style>
 </head>
 <body>
@@ -86,22 +107,67 @@
     <audio id="audio2" src="audio3.mp3"></audio>
 
     <script>
-        let currentAudio = null;
+        const audios = [
+        document.getElementById('audio0'),
+        document.getElementById('audio1'),
+        document.getElementById('audio2')
+    ];
 
-        function playAudio(index) {
-            const audios = [document.getElementById('audio0'), document.getElementById('audio1'), document.getElementById('audio2')];
+    const backgrounds = [
+        "url('girl.png')",
+        "url('girl.png')",
+        "url('girl.png')"
+    ];
 
-       
+    let currentAudio = null;
+    const container = document.querySelector('.container');
+    const cards = document.querySelectorAll('.member-card');
+
+    cards.forEach((card, index) => {
+        card.addEventListener('mouseenter', () => {
+            // Change background
+            document.body.style.backgroundImage = backgrounds[index];
+            document.body.style.backgroundSize = "cover";
+            document.body.style.backgroundPosition = "center";
+
+            // Play audio
             if (currentAudio && !currentAudio.paused) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
             }
-
-     
             currentAudio = audios[index];
             currentAudio.play();
-        }
 
+            // Visual focus
+            container.classList.add('focused');
+            cards.forEach((c, i) => {
+                if (i === index) {
+                    c.classList.add('focused');
+                    c.classList.remove('dimmed');
+                } else {
+                    c.classList.add('dimmed');
+                    c.classList.remove('focused');
+                }
+            });
+        });
+
+        card.addEventListener('mouseleave', () => {
+            // Reset background
+            document.body.style.backgroundImage = "url('girl.png')";
+
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
+            // Reset visual
+            container.classList.remove('focused');
+            cards.forEach(c => {
+                c.classList.remove('dimmed');
+                c.classList.remove('focused');
+            });
+        });
+    });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('.binary-text').forEach(element => {
                 let originalText = element.getAttribute('data-text');
