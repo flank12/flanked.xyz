@@ -34,6 +34,7 @@
       height: 100%;
       background: rgba(0, 0, 0, 0.7);
       z-index: 1;
+      pointer-events: none;
     }
 
     .container {
@@ -104,6 +105,11 @@
       opacity: 0;
       pointer-events: none;
     }
+
+    /* Disable background until the overlay is pressed */
+    body.paused {
+      background: none;
+    }
   </style>
 </head>
 <body>
@@ -165,28 +171,32 @@
       card.addEventListener('mouseenter', () => {
         isHovering = true;
 
-        document.body.style.backgroundImage = backgrounds[index];
+        if (!document.body.classList.contains('paused')) {
+          document.body.style.backgroundImage = backgrounds[index];
 
-        if (currentAudio && !currentAudio.paused) {
-          currentAudio.pause();
-          currentAudio.currentTime = 0;
+          if (currentAudio && !currentAudio.paused) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+          }
+          currentAudio = audios[index];
+          currentAudio.play();
+
+          document.title = titles[index];
         }
-        currentAudio = audios[index];
-        currentAudio.play();
-
-        document.title = titles[index];
       });
 
       card.addEventListener('mouseleave', () => {
         isHovering = false;
         setTimeout(() => {
           if (!isHovering) {
-            document.body.style.backgroundImage = "url('girl.png')";
-            if (currentAudio) {
-              currentAudio.pause();
-              currentAudio.currentTime = 0;
+            if (!document.body.classList.contains('paused')) {
+              document.body.style.backgroundImage = "url('girl.png')";
+              if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+              }
+              document.title = "@instakill";
             }
-            document.title = "@instakill";
           }
         }, 150);
       });
@@ -233,6 +243,7 @@
         audioEnabled = true;
       }
 
+      document.body.classList.remove('paused');
       gate.classList.add('fade-out');
     });
   </script>
