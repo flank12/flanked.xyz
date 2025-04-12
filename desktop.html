@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Rose Particle Effect</title>
+    <title>Particle Effect</title>
     <style>
         body, html {
             margin: 0;
@@ -27,39 +27,36 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // Basic Particle System Setup
+        // Particle properties
         let particles = [];
-        const numParticles = 500;
+        const numParticles = 300;  // Number of particles
 
-        // Shader programs for particle rendering
+        // Vertex and Fragment Shader for Particle Effect
         const vertexShaderSource = `
-            attribute vec4 a_position;
-            attribute vec2 a_texCoord;
+            attribute vec2 a_position;
+            attribute vec4 a_color;
             uniform mat4 u_modelViewProjection;
-            varying vec2 v_texCoord;
+            varying vec4 v_color;
             void main() {
-                gl_Position = u_modelViewProjection * a_position;
-                v_texCoord = a_texCoord;
+                gl_Position = u_modelViewProjection * vec4(a_position, 0.0, 1.0);
+                v_color = a_color;
             }
         `;
         const fragmentShaderSource = `
             precision mediump float;
-            varying vec2 v_texCoord;
-            uniform sampler2D u_sampler;
-            uniform float u_alpha;
+            varying vec4 v_color;
             void main() {
-                vec4 texColor = texture2D(u_sampler, v_texCoord);
-                gl_FragColor = vec4(texColor.rgb, texColor.a * u_alpha);
+                gl_FragColor = v_color;
             }
         `;
 
-        // Compile shaders
+        // Compile shader function
         function compileShader(source, type) {
             const shader = gl.createShader(type);
             gl.shaderSource(shader, source);
             gl.compileShader(shader);
             if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error("ERROR compiling shader: " + gl.getShaderInfoLog(shader));
+                console.error("Error compiling shader:", gl.getShaderInfoLog(shader));
                 gl.deleteShader(shader);
             }
             return shader;
@@ -72,111 +69,115 @@
             gl.attachShader(program, fragmentShader);
             gl.linkProgram(program);
             if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                console.error("ERROR linking program: " + gl.getProgramInfoLog(program));
+                console.error("Error linking program:", gl.getProgramInfoLog(program));
             }
             return program;
         }
 
-        // Load texture for particles
-        function loadTexture(url, callback) {
-            const texture = gl.createTexture();
-            const image = new Image();
-            image.onload = () => {
-                gl.bindTexture(gl.TEXTURE_2D, texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-                gl.generateMipmap(gl.TEXTURE_2D);
-                callback(texture);
-            };
-            image.src = url;
-        }
-
-        // Set up shaders and buffer data
+        // Initialize shaders
         const vertexShader = compileShader(vertexShaderSource, gl.VERTEX_SHADER);
         const fragmentShader = compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
         const program = createProgram(vertexShader, fragmentShader);
         gl.useProgram(program);
 
-        // Set up particle buffer
+        // Set up buffer for particle positions and colors
         const positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            -0.5, -0.5, 0.0, 1.0,
-            0.5, -0.5, 1.0, 1.0,
-            -0.5, 0.5, 0.0, 0.0,
-            0.5, 0.5, 1.0, 0.0,
-        ]), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(0), gl.DYNAMIC_DRAW);
 
-        // Get attribute and uniform locations
+        const colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(0), gl.DYNAMIC_DRAW);
+
         const positionLocation = gl.getAttribLocation(program, "a_position");
-        const texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
-        const u_modelViewProjection = gl.getUniformLocation(program, "u_modelViewProjection");
-        const u_samplerLocation = gl.getUniformLocation(program, "u_sampler");
-        const u_alphaLocation = gl.getUniformLocation(program, "u_alpha");
+        const colorLocation = gl.getAttribLocation(program, "a_color");
 
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 4 * 4, 0);
-        gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 4 * 4, 2 * 4);
+        const u_modelViewProjection = gl.getUniformLocation(program, "u_modelViewProjection");
 
         gl.enableVertexAttribArray(positionLocation);
-        gl.enableVertexAttribArray(texCoordLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        gl.enableVertexAttribArray(colorLocation);
+        gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
 
         // Create particles
         function createParticle() {
             return {
-                x: Math.random() * 2 - 1, // Random start position
-                y: Math.random() * 2 - 1,
-                size: Math.random() * 3 + 1, // Random size
-                life: Math.random() * 1 + 1, // Life span of the particle
-                alpha: 1, // Full opacity at the start
-                speedX: Math.random() * 0.05 - 0.025, // Random speed for X axis
-                speedY: Math.random() * 0.05 - 0.025, // Random speed for Y axis
+                x: Math.random() * 2 - 1, // Random X position
+                y: Math.random() * 2 - 1, // Random Y position
+                size: Math.random() * 0.05 + 0.02, // Random size
+                alpha: 1.0, // Full opacity at the start
+                speedX: Math.random() * 0.02 - 0.01, // Random X velocity
+                speedY: Math.random() * 0.02 - 0.01, // Random Y velocity
+                r: Math.random(), // Random red color component
+                g: Math.random(), // Random green color component
+                b: Math.random(), // Random blue color component
             };
         }
 
-        // Initialize particles
+        // Initialize all particles
         function initParticles() {
             for (let i = 0; i < numParticles; i++) {
                 particles.push(createParticle());
             }
         }
 
-        // Animation loop to update particles and the rose effect
-        function animate(texture) {
-            gl.clear(gl.COLOR_BUFFER_BIT);
-
-            // Update and draw particles
+        // Update particle positions and properties
+        function updateParticles() {
             particles.forEach((particle, index) => {
                 particle.x += particle.speedX;
                 particle.y += particle.speedY;
-                particle.life -= 0.01; // Particles fade over time
-                particle.alpha = Math.max(0, particle.life);
+                particle.alpha -= 0.01; // Decrease alpha over time
 
-                if (particle.life <= 0) {
-                    particles[index] = createParticle(); // Reset dead particles
+                // Reset particle when it fades out
+                if (particle.alpha <= 0) {
+                    particles[index] = createParticle();
                 }
             });
-
-            // Set up the rose shape in the middle
-            gl.uniformMatrix4fv(u_modelViewProjection, false, new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1])); // Identity matrix
-
-            // Set up texture and particle opacity for rendering
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.uniform1i(u_samplerLocation, 0);
-
-            // Draw the particles
-            particles.forEach(particle => {
-                gl.uniform1f(u_alphaLocation, particle.alpha);
-                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-            });
-
-            requestAnimationFrame(() => animate(texture));
         }
 
-        // Load texture and start the animation
-        loadTexture('rose.png', (texture) => {
-            initParticles();
-            animate(texture);
-        });
+        // Render the particles
+        function renderParticles() {
+            // Prepare data for particle positions and colors
+            const positions = [];
+            const colors = [];
+
+            particles.forEach(particle => {
+                positions.push(particle.x, particle.y);
+                colors.push(particle.r, particle.g, particle.b, particle.alpha);
+            });
+
+            // Update buffer data
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.DYNAMIC_DRAW);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.DYNAMIC_DRAW);
+
+            // Clear the screen and draw particles
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            const modelViewProjectionMatrix = new Float32Array([
+                2 / canvas.width, 0, 0, 0,
+                0, -2 / canvas.height, 0, 0,
+                0, 0, 1, 0,
+                -1, 1, 0, 1
+            ]);
+            gl.uniformMatrix4fv(u_modelViewProjection, false, modelViewProjectionMatrix);
+
+            gl.drawArrays(gl.POINTS, 0, particles.length);
+        }
+
+        // Main animation loop
+        function animate() {
+            updateParticles();
+            renderParticles();
+            requestAnimationFrame(animate);
+        }
+
+        // Start particle system
+        initParticles();
+        animate();
+
     </script>
 </body>
 </html>
