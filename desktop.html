@@ -69,16 +69,16 @@
         }
 
         // Load texture (PNG image)
-        function loadTexture(url) {
+        function loadTexture(url, callback) {
             const texture = gl.createTexture();
             const image = new Image();
             image.onload = () => {
                 gl.bindTexture(gl.TEXTURE_2D, texture);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
                 gl.generateMipmap(gl.TEXTURE_2D);
+                callback(texture);
             };
             image.src = url;
-            return texture;
         }
 
         // Set up canvas and shaders
@@ -109,14 +109,8 @@
         gl.enableVertexAttribArray(positionLocation);
         gl.enableVertexAttribArray(texCoordLocation);
 
-        // Load texture (replace with your image path)
-        const texture = loadTexture('dorm.png');  // Replace with your PNG file path
-
-        // Set up texture uniform
-        const samplerLocation = gl.getUniformLocation(program, "u_sampler");
-
         // Set up the viewport and animation
-        function init() {
+        function init(texture) {
             gl.clearColor(0.0, 0.0, 0.0, 1.0); // Black background
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -124,6 +118,7 @@
             // Set up texture
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, texture);
+            const samplerLocation = gl.getUniformLocation(program, "u_sampler");
             gl.uniform1i(samplerLocation, 0);
 
             animate();
@@ -134,12 +129,12 @@
             gl.clear(gl.COLOR_BUFFER_BIT);
 
             // Update particle positions or movement here if needed
-
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);  // Draw particles
             requestAnimationFrame(animate);
         }
 
-        init();
+        // Load texture and start animation after the image has been loaded
+        loadTexture('dorm.png', init); // Replace 'dorm.png' with the actual image path
     </script>
 </body>
 </html>
