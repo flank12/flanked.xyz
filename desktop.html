@@ -122,8 +122,8 @@
         // Create particles
         function createParticle() {
             return {
-                x: 0, // Start at the center of the screen (rose center)
-                y: 0,
+                x: Math.random() * 2 - 1, // Random start position
+                y: Math.random() * 2 - 1,
                 size: Math.random() * 3 + 1, // Random size
                 life: Math.random() * 1 + 1, // Life span of the particle
                 alpha: 1, // Full opacity at the start
@@ -137,24 +137,6 @@
             for (let i = 0; i < numParticles; i++) {
                 particles.push(createParticle());
             }
-        }
-
-        // Draw the rose shape (simple circle representation)
-        function drawRose() {
-            const segments = 12;
-            const radius = 0.05;
-            const roseVertices = [];
-            const texCoords = [];
-            for (let i = 0; i < segments; i++) {
-                const angle = (i / segments) * 2 * Math.PI;
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
-                roseVertices.push(x, y);
-                texCoords.push(0.5 + 0.5 * x, 0.5 + 0.5 * y);
-            }
-            // Push the rose shape vertices into buffer
-            const roseData = new Float32Array(roseVertices);
-            gl.bufferData(gl.ARRAY_BUFFER, roseData, gl.STATIC_DRAW);
         }
 
         // Animation loop to update particles and the rose effect
@@ -174,7 +156,7 @@
             });
 
             // Set up the rose shape in the middle
-            drawRose();
+            gl.uniformMatrix4fv(u_modelViewProjection, false, new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1])); // Identity matrix
 
             // Set up texture and particle opacity for rendering
             gl.activeTexture(gl.TEXTURE0);
