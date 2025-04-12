@@ -32,13 +32,14 @@
 
         // Create particles based on the rose curve
         var drawTheRose = function() {
-            var geometry = new THREE.Geometry();
+            var geometry = new THREE.BufferGeometry();
             var material = new THREE.PointsMaterial({
                 size: 3,
                 color: 0x313742,
                 sizeAttenuation: false
             });
 
+            var positions = [];
             var k = 5;  // Number of petals
             var radius = 200;  // Radius of the rose
             var angleStep = 0.1;  // Step for the angle
@@ -51,10 +52,12 @@
                 var y = r * Math.sin(theta);
                 var z = Math.random() * 100 - 50;  // Add some random depth
 
-                var vertex = new THREE.Vector3(x, y, z);
-
-                geometry.vertices.push(vertex);
+                // Push positions to the array
+                positions.push(x, y, z);
             }
+
+            // Set positions as the attribute of the geometry
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
 
             particles = new THREE.Points(geometry, material);
             scene.add(particles);
@@ -105,14 +108,14 @@
             requestAnimationFrame(render);
 
             // Update particle positions (simulate some movement)
-            particles.geometry.vertices.forEach((particle) => {
-                particle.x += Math.sin(a / 1000) * 0.5;
-                particle.y += Math.cos(a / 1000) * 0.5;
+            particles.geometry.attributes.position.array.forEach((particle, i) => {
+                // Move the particles along a sine wave for dynamic movement
+                particles.geometry.attributes.position.array[i] += Math.sin(a / 1000) * 0.5;
             });
 
             // Hover effect: move particles toward a spherical form when near the center
             if (Math.abs(mouse.x) < 0.1 && Math.abs(mouse.y) < 0.1) {
-                particles.geometry.vertices.forEach((particle) => {
+                particles.geometry.attributes.position.array.forEach((particle, i) => {
                     var dist = Math.sqrt(particle.x * particle.x + particle.y * particle.y + particle.z * particle.z);
                     var targetRadius = 100;
                     var scale = targetRadius / dist;
@@ -127,7 +130,8 @@
                 });
             }
 
-            particles.geometry.verticesNeedUpdate = true;
+            // Mark the positions as updated
+            particles.geometry.attributes.position.needsUpdate = true;
 
             // Rotate the camera around to give a dynamic view
             camera.position.x = Math.sin(a / 5000) * 300;
