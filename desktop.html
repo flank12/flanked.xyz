@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNG Particle Effect</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const canvas = document.createElement("canvas");
+        document.body.appendChild(canvas);
+        const gl = canvas.getContext("webgl");
+
+        // Vertex shader program
+        const vertexShaderSource = `
+            attribute vec4 a_position;
+            attribute vec2 a_texCoord;
+            varying vec2 v_texCoord;
+            void main() {
+                gl_Position = a_position;
+                v_texCoord = a_texCoord;
+            }
+        `;
+
+        // Fragment shader program
+        const fragmentShaderSource = `
+            precision mediump float;
+            varying vec2 v_texCoord;
+            uniform sampler2D u_sampler;
+            void main() {
+                gl_FragColor = texture2D(u_sampler, v_texCoord);
+            }
+        `;
+
+        // Compile shader function
+        function compileShader(source, type) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error("ERROR compiling shader: " + gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+            }
+            return shader;
+        }
+
+        // Create shader program
+        function createProgram(vertexShader, fragmentShader) {
+            const program = gl.createProgram();
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            gl.linkProgram(program);
+            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                console.error("ERROR linking program: " + gl.getProgramInfoLog(program));
+            }
+            return program;
+        }
+
+        // Load texture (PNG image)
+        function loadTexture(url) {
+            const texture = gl.createTexture();
+            const image = new Image();
+            image.onload = () => {
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+                gl.generateMipmap(gl.TEXTURE_2D);
+            };
+            image.src = url;
+            return texture;
+        }
+
+        // Set up canvas and shaders
+        const vertexShader = compileShader(vertexShaderSource, gl.VERTEX_SHADER);
+        const fragmentShader = compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
+        const program = createProgram(vertexShader, fragmentShader);
+        gl.useProgram(program);
+
+        // Particle data (positions and texture coordinates)
+        const vertices = new Float32Array([
+            -0.5, -0.5,  0.0, 1.0,
+             0.5, -0.5,  1.0, 1.0,
+            -0.5,  0.5,  0.0, 0.0,
+             0.5,  0.5,  1.0, 0.0,
+        ]);
+
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        // Get attribute locations
+        const positionLocation = gl.getAttribLocation(program, "a_position");
+        const texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
+
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 4 * 4, 0);
+        gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 4 * 4, 2 * 4);
+
+        gl.enableVertexAttribArray(positionLocation);
+        gl.enableVertexAttribArray(texCoordLocation);
+
+        // Load texture (replace with your image path)
+        const texture = loadTexture('your-image.png');  // Replace with your PNG file path
+
+        // Set up texture uniform
+        const samplerLocation = gl.getUniformLocation(program, "u_sampler");
+
+        // Set up the viewport and animation
+        function init() {
+            gl.clearColor(0.0, 0.0, 0.0, 1.0); // Black background
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // Set up texture
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.uniform1i(samplerLocation, 0);
+
+            animate();
+        }
+
+        // Animation loop to move particles
+        function animate() {
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            // Update particle positions or movement here if needed
+
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);  // Draw particles
+            requestAnimationFrame(animate);
+        }
+
+        init();
+    </script>
+</body>
+</html>
