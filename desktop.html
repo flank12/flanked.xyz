@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Particle Effect - Rose Image</title>
+    <title>Particle Rose Shape</title>
     <style>
         body, html, canvas {
             width: 100%;
@@ -24,25 +24,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.0/gsap.min.js"></script>
     <script>
         var renderer, scene, camera, ww, wh, particles;
-        var texture, imagedata;
-        var previousTime = 0;
         var centerVector = new THREE.Vector3(0, 0, 0);
+        var previousTime = 0;
 
         ww = window.innerWidth;
         wh = window.innerHeight;
 
-        // Get pixel data from image
-        var getImageData = function(image) {
-            var canvas = document.createElement("canvas");
-            canvas.width = image.width;
-            canvas.height = image.height;
-            var ctx = canvas.getContext("2d");
-            ctx.drawImage(image, 0, 0);
-            return ctx.getImageData(0, 0, image.width, image.height);
-        };
-
-        // Draw the particles based on the image data (rose image)
-        var drawTheMap = function() {
+        // Create particles based on the rose curve
+        var drawTheRose = function() {
             var geometry = new THREE.Geometry();
             var material = new THREE.PointsMaterial({
                 size: 3,
@@ -50,26 +39,21 @@
                 sizeAttenuation: false
             });
 
-            // Generate particles based on pixel data
-            for (var y = 0; y < imagedata.height; y += 2) {
-                for (var x = 0; x < imagedata.width; x += 2) {
-                    if (imagedata.data[(x * 4 + y * 4 * imagedata.width) + 3] > 128) {
-                        var vertex = new THREE.Vector3();
-                        vertex.x = Math.random() * 1000 - 500;
-                        vertex.y = Math.random() * 1000 - 500;
-                        vertex.z = -Math.random() * 500;
+            var k = 5;  // Number of petals
+            var radius = 200;  // Radius of the rose
+            var angleStep = 0.1;  // Step for the angle
 
-                        vertex.destination = {
-                            x: x - imagedata.width / 2,
-                            y: -y + imagedata.height / 2,
-                            z: 0
-                        };
+            // Create particles based on the parametric equation of the rose
+            for (var theta = 0; theta < Math.PI * 2 * k; theta += angleStep) {
+                var r = Math.cos(k * theta) * radius;  // Rose curve equation
 
-                        vertex.speed = Math.random() / 200 + 0.015;
+                var x = r * Math.cos(theta);
+                var y = r * Math.sin(theta);
+                var z = Math.random() * 100 - 50;  // Add some random depth
 
-                        geometry.vertices.push(vertex);
-                    }
-                }
+                var vertex = new THREE.Vector3(x, y, z);
+
+                geometry.vertices.push(vertex);
             }
 
             particles = new THREE.Points(geometry, material);
@@ -77,9 +61,8 @@
             requestAnimationFrame(render);
         };
 
-        // Set up the scene and camera
+        // Initialize the scene
         var init = function() {
-            THREE.ImageUtils.crossOrigin = '';
             renderer = new THREE.WebGLRenderer({
                 canvas: document.getElementById("map"),
                 antialias: true
@@ -90,21 +73,17 @@
             scene = new THREE.Scene();
 
             camera = new THREE.PerspectiveCamera(50, ww / wh, 0.1, 10000);
-            camera.position.set(-100, 0, 220);
+            camera.position.set(-300, 0, 500);
             camera.lookAt(centerVector);
             scene.add(camera);
 
-            // Load the rose image
-            texture = new THREE.TextureLoader().load("rose.png", function(texture) {
-                imagedata = getImageData(texture.image);
-                drawTheMap();
-            });
+            drawTheRose();
 
             window.addEventListener('resize', onResize, false);
-            window.addEventListener('mousemove', onMouseMove, false); // Listen for mouse movement
+            window.addEventListener('mousemove', onMouseMove, false); // Hover effect
         };
 
-        // Resize the canvas on window resize
+        // Resize the canvas when window size changes
         var onResize = function() {
             ww = window.innerWidth;
             wh = window.innerHeight;
@@ -113,7 +92,7 @@
             camera.updateProjectionMatrix();
         };
 
-        // Track mouse position for hover effect
+        // Hover effect for the particles
         var mouse = new THREE.Vector2();
 
         var onMouseMove = function(event) {
@@ -125,17 +104,15 @@
         var render = function(a) {
             requestAnimationFrame(render);
 
-            // Update particle positions and handle hover effect
+            // Update particle positions (simulate some movement)
             particles.geometry.vertices.forEach((particle) => {
-                particle.x += (particle.destination.x - particle.x) * particle.speed;
-                particle.y += (particle.destination.y - particle.y) * particle.speed;
-                particle.z += (particle.destination.z - particle.z) * particle.speed;
+                particle.x += Math.sin(a / 1000) * 0.5;
+                particle.y += Math.cos(a / 1000) * 0.5;
             });
 
-            // Hover effect: Make particles form a ball when the mouse is close to the center
+            // Hover effect: move particles toward a spherical form when near the center
             if (Math.abs(mouse.x) < 0.1 && Math.abs(mouse.y) < 0.1) {
                 particles.geometry.vertices.forEach((particle) => {
-                    // Make particles move toward a spherical form at the center
                     var dist = Math.sqrt(particle.x * particle.x + particle.y * particle.y + particle.z * particle.z);
                     var targetRadius = 100;
                     var scale = targetRadius / dist;
@@ -152,15 +129,15 @@
 
             particles.geometry.verticesNeedUpdate = true;
 
-            // Animate camera rotation
-            camera.position.x = Math.sin(a / 5000) * 100;
-            camera.position.y = Math.cos(a / 5000) * 100;
+            // Rotate the camera around to give a dynamic view
+            camera.position.x = Math.sin(a / 5000) * 300;
+            camera.position.y = Math.cos(a / 5000) * 300;
             camera.lookAt(centerVector);
 
             renderer.render(scene, camera);
         };
 
-        // Initialize the scene and start the rendering loop
+        // Initialize the scene and start rendering
         init();
     </script>
 </body>
