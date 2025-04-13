@@ -20,25 +20,25 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <script>
-    let scene, camera, renderer, particles, positions, velocities = [];
-    const mouse = new THREE.Vector2(-10, -10); // Hide by default
+    let scene, camera, renderer, particles, velocities = [];
+    const mouse = new THREE.Vector2(-1000, -1000); // start far away
 
-    // ✅ FIXED RED & GREEN PARTICLE COORDINATES — no trailing commas or syntax issues
     const redPoints = [
-      [-26.00, -102.00], [-24.00, -102.00], [-22.00, -102.00], [-20.00, -102.00], [-18.00, -102.00],
-      [-16.00, -102.00], [-14.00, -102.00], [-12.00, -102.00], [-34.00, -100.00], [-32.00, -100.00],
-      [-30.00, -100.00], [-28.00, -100.00], [-26.00, -100.00], [-24.00, -100.00], [-22.00, -100.00],
-      [-20.00, -100.00], [-18.00, -100.00], [-16.00, -100.00], [-14.00, -100.00], [-12.00, -100.00],
-      [-10.00, -100.00], [-8.00, -100.00], [-6.00, -100.00]
+      [-40, -50], [-38, -50], [-36, -50], [-34, -50], [-32, -50], [-30, -48], [-28, -48],
+      [-26, -48], [-24, -46], [-22, -46], [-20, -44], [-18, -44], [-16, -42], [-14, -40],
+      [-12, -38], [-10, -36], [-8, -34], [-6, -32], [-4, -30], [-2, -28], [0, -26],
+      [2, -24], [4, -22], [6, -20], [8, -18], [10, -16], [12, -14], [14, -12], [16, -10],
+      [18, -8], [20, -6], [22, -4], [24, -2], [26, 0], [28, 2], [30, 4], [32, 6],
+      [34, 8], [36, 10], [38, 12], [40, 14]
     ];
 
     const greenPoints = [
-      [-2.00, 58.00], [0.00, 58.00], [2.00, 58.00], [-4.00, 60.00], [-2.00, 60.00],
-      [0.00, 60.00], [2.00, 60.00], [4.00, 60.00], [-6.00, 62.00], [-4.00, 62.00]
+      [0, 20], [0, 22], [0, 24], [0, 26], [0, 28], [0, 30], [0, 32], [0, 34],
+      [0, 36], [0, 38], [0, 40], [0, 42], [0, 44], [0, 46], [0, 48], [0, 50]
     ];
 
-    const combinedPoints = redPoints.map(p => [...p, 0.6, 'red'])
-      .concat(greenPoints.map(p => [...p, 0.6, 'green']));
+    const points = redPoints.map(p => [...p, 0, 'red'])
+      .concat(greenPoints.map(p => [...p, 0, 'green']));
 
     function init() {
       const canvas = document.getElementById('map');
@@ -49,26 +49,32 @@
       scene = new THREE.Scene();
 
       camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
-      camera.position.z = 500;
+      camera.position.z = 300;
 
       const geometry = new THREE.BufferGeometry();
-      const posArray = [];
-      const colorArray = [];
+      const positions = [];
+      const colors = [];
 
-      combinedPoints.forEach(([x, y, z, alpha, color]) => {
-        posArray.push(x, y, z);
-        velocities.push(new THREE.Vector3());
+      points.forEach(([x, y, z, color]) => {
+        positions.push(x, y, z);
         const c = new THREE.Color(color);
-        colorArray.push(c.r, c.g, c.b);
+        colors.push(c.r, c.g, c.b);
+        velocities.push(new THREE.Vector3());
       });
 
-      positions = new Float32Array(posArray);
-      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colorArray, 3));
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
+      // Load the image texture
+      const textureLoader = new THREE.TextureLoader();
+      const texture = textureLoader.load('rose.png'); // Replace with your image URL
+
+      // Use the texture in the PointsMaterial
       const material = new THREE.PointsMaterial({
-        size: 2.5,
-        vertexColors: true,
+        size: 10, // Adjust size of the particles
+        map: texture,
+        transparent: true,
+        blending: THREE.AdditiveBlending
       });
 
       particles = new THREE.Points(geometry, material);
@@ -88,38 +94,38 @@
     function animate() {
       requestAnimationFrame(animate);
 
-      const positionsAttr = particles.geometry.attributes.position;
+      const positions = particles.geometry.attributes.position;
 
-      for (let i = 0; i < combinedPoints.length; i++) {
+      for (let i = 0; i < points.length; i++) {
         const i3 = i * 3;
-        const orig = new THREE.Vector3(...combinedPoints[i]);
+        const orig = new THREE.Vector3(points[i][0], points[i][1], points[i][2]);
         const pos = new THREE.Vector3(
-          positionsAttr.array[i3],
-          positionsAttr.array[i3 + 1],
-          positionsAttr.array[i3 + 2]
+          positions.array[i3],
+          positions.array[i3 + 1],
+          positions.array[i3 + 2]
         );
 
-        const vec = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
-        const dir = pos.clone().sub(vec);
+        const mouse3D = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
+        const dir = pos.clone().sub(mouse3D);
         const dist = dir.length();
 
-        if (dist < 80) {
-          dir.normalize().multiplyScalar((80 - dist) * 0.15);
+        if (dist < 50) {
+          dir.normalize().multiplyScalar((50 - dist) * 0.15);
           velocities[i].add(dir);
         }
 
-        const spring = orig.clone().sub(pos).multiplyScalar(0.02);
+        const spring = orig.clone().sub(pos).multiplyScalar(0.05);
         velocities[i].add(spring);
         velocities[i].multiplyScalar(0.9);
 
         pos.add(velocities[i]);
 
-        positionsAttr.array[i3] = pos.x;
-        positionsAttr.array[i3 + 1] = pos.y;
-        positionsAttr.array[i3 + 2] = pos.z;
+        positions.array[i3] = pos.x;
+        positions.array[i3 + 1] = pos.y;
+        positions.array[i3 + 2] = pos.z;
       }
 
-      positionsAttr.needsUpdate = true;
+      positions.needsUpdate = true;
       renderer.render(scene, camera);
     }
 
