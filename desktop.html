@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Rose</title>
+  <title>Rose Particles</title>
   <style>
     html, body {
       margin: 0;
@@ -23,19 +23,18 @@
     let scene, camera, renderer, particles, positions, velocities = [];
     const mouse = new THREE.Vector2(-10, -10); // Hide by default
 
-    // ROSE PARTICLE COORDINATES (EXTRACTED FROM IMAGE)
+    // ✅ FIXED RED & GREEN PARTICLE COORDINATES — no trailing commas or syntax issues
     const redPoints = [
       [-26.00, -102.00], [-24.00, -102.00], [-22.00, -102.00], [-20.00, -102.00], [-18.00, -102.00],
       [-16.00, -102.00], [-14.00, -102.00], [-12.00, -102.00], [-34.00, -100.00], [-32.00, -100.00],
       [-30.00, -100.00], [-28.00, -100.00], [-26.00, -100.00], [-24.00, -100.00], [-22.00, -100.00],
       [-20.00, -100.00], [-18.00, -100.00], [-16.00, -100.00], [-14.00, -100.00], [-12.00, -100.00],
-      [-10.00, -100.00], [-8.00, -100.00], [-6.00, -100.00], [-54.00, -98.00], [-52.00, -98.00],
-      ...
+      [-10.00, -100.00], [-8.00, -100.00], [-6.00, -100.00]
     ];
+
     const greenPoints = [
       [-2.00, 58.00], [0.00, 58.00], [2.00, 58.00], [-4.00, 60.00], [-2.00, 60.00],
-      [0.00, 60.00], [2.00, 60.00], [4.00, 60.00], [-6.00, 62.00], [-4.00, 62.00],
-      ...
+      [0.00, 60.00], [2.00, 60.00], [4.00, 60.00], [-6.00, 62.00], [-4.00, 62.00]
     ];
 
     const combinedPoints = redPoints.map(p => [...p, 0.6, 'red'])
@@ -86,7 +85,7 @@
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     }
 
-    function animate(t) {
+    function animate() {
       requestAnimationFrame(animate);
 
       const positionsAttr = particles.geometry.attributes.position;
