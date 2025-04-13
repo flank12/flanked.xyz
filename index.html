@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>@instakill</title>
   <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
- <script src="sparkle.js"></script>
+  <script src="sparkle.js"></script>
   <style>
     * {
       margin: 0;
@@ -24,6 +24,7 @@
       text-align: center;
       transition: background-image 0.5s ease-in-out;
       font-family: monospace;
+      transition: all 0.5s ease;
     }
 
     .overlay {
@@ -110,9 +111,21 @@
     body.paused {
       background: none;
     }
+
+    /* Binary Text Animation */
+    .binary-text {
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
   </style>
 </head>
-<body>
+<body class="paused">
   <div id="enter-gate">
     <div class="enter-text">Click to Enter...</div>
   </div>
@@ -243,6 +256,7 @@
         audioEnabled = true;
       }
 
+      // Remove the paused class to start the background and content
       document.body.classList.remove('paused');
       gate.classList.add('fade-out');
     });
