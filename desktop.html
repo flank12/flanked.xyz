@@ -1,137 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Interactive Rose Particles</title>
+  <meta charset="UTF-8">
+  <title>Rose</title>
   <style>
-    body, html, canvas {
+    html, body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
       overflow: hidden;
-      background-color: #111;
+      background-color: #1d1f23;
+    }
+    canvas {
+      display: block;
     }
   </style>
 </head>
 <body>
-<canvas id="map"></canvas>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-let renderer, scene, camera, ww, wh;
-let roseParticles, originalPositions = [], displacedPositions = [];
-let mouse = new THREE.Vector2(-999, -999);
-let clock = new THREE.Clock();
+  <canvas id="map"></canvas>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-ww = window.innerWidth;
-wh = window.innerHeight;
+  <script>
+    let scene, camera, renderer, particles, positions, velocities = [];
+    const mouse = new THREE.Vector2(-10, -10); // Hide by default
 
-function drawRose() {
-    const geometry = new THREE.BufferGeometry();
-    const positions = [];
+    // ROSE PARTICLE COORDINATES (EXTRACTED FROM IMAGE)
+    const redPoints = [
+      [-26.00, -102.00], [-24.00, -102.00], [-22.00, -102.00], [-20.00, -102.00], [-18.00, -102.00],
+      [-16.00, -102.00], [-14.00, -102.00], [-12.00, -102.00], [-34.00, -100.00], [-32.00, -100.00],
+      [-30.00, -100.00], [-28.00, -100.00], [-26.00, -100.00], [-24.00, -100.00], [-22.00, -100.00],
+      [-20.00, -100.00], [-18.00, -100.00], [-16.00, -100.00], [-14.00, -100.00], [-12.00, -100.00],
+      [-10.00, -100.00], [-8.00, -100.00], [-6.00, -100.00], [-54.00, -98.00], [-52.00, -98.00],
+      ...
+    ];
+    const greenPoints = [
+      [-2.00, 58.00], [0.00, 58.00], [2.00, 58.00], [-4.00, 60.00], [-2.00, 60.00],
+      [0.00, 60.00], [2.00, 60.00], [4.00, 60.00], [-6.00, 62.00], [-4.00, 62.00],
+      ...
+    ];
 
-    const k = 6; // More petals
-    const radius = 150;
-    const step = 0.01; // Higher resolution = more points
+    const combinedPoints = redPoints.map(p => [...p, 0.6, 'red'])
+      .concat(greenPoints.map(p => [...p, 0.6, 'green']));
 
-    for (let theta = 0; theta < Math.PI * 2 * k; theta += step) {
-        let r = Math.cos(k * theta) * radius;
-        let x = r * Math.cos(theta);
-        let y = r * Math.sin(theta);
-        let z = 0;
-        positions.push(x, y, z);
-        originalPositions.push(new THREE.Vector3(x, y, z));
-        displacedPositions.push(new THREE.Vector3(x, y, z));
+    function init() {
+      const canvas = document.getElementById('map');
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      scene = new THREE.Scene();
+
+      camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+      camera.position.z = 500;
+
+      const geometry = new THREE.BufferGeometry();
+      const posArray = [];
+      const colorArray = [];
+
+      combinedPoints.forEach(([x, y, z, alpha, color]) => {
+        posArray.push(x, y, z);
+        velocities.push(new THREE.Vector3());
+        const c = new THREE.Color(color);
+        colorArray.push(c.r, c.g, c.b);
+      });
+
+      positions = new Float32Array(posArray);
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colorArray, 3));
+
+      const material = new THREE.PointsMaterial({
+        size: 2.5,
+        vertexColors: true,
+      });
+
+      particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('resize', onResize);
+
+      animate();
     }
 
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    function onMouseMove(e) {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    }
 
-    const material = new THREE.PointsMaterial({
-        size: 2.5,
-        color: 0xff2d55,
-        sizeAttenuation: true
-    });
+    function animate(t) {
+      requestAnimationFrame(animate);
 
-    roseParticles = new THREE.Points(geometry, material);
-    scene.add(roseParticles);
-}
+      const positionsAttr = particles.geometry.attributes.position;
 
-function init() {
-    renderer = new THREE.WebGLRenderer({
-        canvas: document.getElementById("map"),
-        antialias: true
-    });
-    renderer.setSize(ww, wh);
-    renderer.setClearColor(0x111111);
+      for (let i = 0; i < combinedPoints.length; i++) {
+        const i3 = i * 3;
+        const orig = new THREE.Vector3(...combinedPoints[i]);
+        const pos = new THREE.Vector3(
+          positionsAttr.array[i3],
+          positionsAttr.array[i3 + 1],
+          positionsAttr.array[i3 + 2]
+        );
 
-    scene = new THREE.Scene();
+        const vec = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
+        const dir = pos.clone().sub(vec);
+        const dist = dir.length();
 
-    camera = new THREE.PerspectiveCamera(60, ww / wh, 0.1, 10000);
-    camera.position.set(0, 0, 600);
-    scene.add(camera);
-
-    drawRose();
-
-    window.addEventListener('resize', onResize);
-    window.addEventListener('mousemove', onMouseMove);
-
-    animate();
-}
-
-function onResize() {
-    ww = window.innerWidth;
-    wh = window.innerHeight;
-    renderer.setSize(ww, wh);
-    camera.aspect = ww / wh;
-    camera.updateProjectionMatrix();
-}
-
-function onMouseMove(event) {
-    const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((event.clientX - rect.left) / ww) * 2 - 1;
-    mouse.y = -((event.clientY - rect.top) / wh) * 2 + 1;
-}
-
-function animate() {
-    requestAnimationFrame(animate);
-
-    let elapsed = clock.getElapsedTime();
-    let posAttr = roseParticles.geometry.attributes.position;
-
-    // Project mouse to 3D space
-    let vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-    vector.unproject(camera);
-
-    let dir = vector.sub(camera.position).normalize();
-    let distance = (0 - camera.position.z) / dir.z;
-    let mousePos = camera.position.clone().add(dir.multiplyScalar(distance));
-
-    // Update particles
-    for (let i = 0; i < displacedPositions.length; i++) {
-        let orig = originalPositions[i];
-        let disp = displacedPositions[i];
-
-        let dist = mousePos.distanceTo(disp);
-        if (dist < 100) {
-            let force = (100 - dist) / 100;
-            let away = disp.clone().sub(mousePos).normalize().multiplyScalar(force * 15);
-            disp.add(away);
+        if (dist < 80) {
+          dir.normalize().multiplyScalar((80 - dist) * 0.15);
+          velocities[i].add(dir);
         }
 
-        // Smooth return to original position
-        disp.lerp(orig, 0.05);
+        const spring = orig.clone().sub(pos).multiplyScalar(0.02);
+        velocities[i].add(spring);
+        velocities[i].multiplyScalar(0.9);
 
-        posAttr.array[i * 3] = disp.x;
-        posAttr.array[i * 3 + 1] = disp.y;
-        posAttr.array[i * 3 + 2] = disp.z;
+        pos.add(velocities[i]);
+
+        positionsAttr.array[i3] = pos.x;
+        positionsAttr.array[i3 + 1] = pos.y;
+        positionsAttr.array[i3 + 2] = pos.z;
+      }
+
+      positionsAttr.needsUpdate = true;
+      renderer.render(scene, camera);
     }
 
-    posAttr.needsUpdate = true;
-    renderer.render(scene, camera);
-}
+    function onResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
 
-init();
-</script>
+    init();
+  </script>
 </body>
 </html>
