@@ -22,23 +22,26 @@
   <script>
     let scene, camera, renderer, particles, velocities = [];
     const mouse = new THREE.Vector2(-1000, -1000); // start far away
+    const imageWidth = 100; // Image width in pixels
+    const imageHeight = 100; // Image height in pixels
 
-    const redPoints = [
-      [-40, -50], [-38, -50], [-36, -50], [-34, -50], [-32, -50], [-30, -48], [-28, -48],
-      [-26, -48], [-24, -46], [-22, -46], [-20, -44], [-18, -44], [-16, -42], [-14, -40],
-      [-12, -38], [-10, -36], [-8, -34], [-6, -32], [-4, -30], [-2, -28], [0, -26],
-      [2, -24], [4, -22], [6, -20], [8, -18], [10, -16], [12, -14], [14, -12], [16, -10],
-      [18, -8], [20, -6], [22, -4], [24, -2], [26, 0], [28, 2], [30, 4], [32, 6],
-      [34, 8], [36, 10], [38, 12], [40, 14]
-    ];
+    // Load the image texture
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('rose.png'); // Replace with your image URL
+    texture.magFilter = THREE.NearestFilter; // To avoid texture smoothing
+    texture.minFilter = THREE.NearestFilter;
 
-    const greenPoints = [
-      [0, 20], [0, 22], [0, 24], [0, 26], [0, 28], [0, 30], [0, 32], [0, 34],
-      [0, 36], [0, 38], [0, 40], [0, 42], [0, 44], [0, 46], [0, 48], [0, 50]
-    ];
+    const points = [];
 
-    const points = redPoints.map(p => [...p, 0, 'red'])
-      .concat(greenPoints.map(p => [...p, 0, 'green']));
+    // Create a 2D grid of particles corresponding to the image's pixels
+    function createParticleGrid() {
+      for (let y = 0; y < imageHeight; y++) {
+        for (let x = 0; x < imageWidth; x++) {
+          const i = (y * imageWidth + x);
+          points.push([x - imageWidth / 2, y - imageHeight / 2, 0, i]);
+        }
+      }
+    }
 
     function init() {
       const canvas = document.getElementById('map');
@@ -51,30 +54,28 @@
       camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
       camera.position.z = 300;
 
+      createParticleGrid(); // Create the particle grid based on the image
+
       const geometry = new THREE.BufferGeometry();
       const positions = [];
-      const colors = [];
+      const uvs = [];
 
-      points.forEach(([x, y, z, color]) => {
+      points.forEach(([x, y, z, index]) => {
         positions.push(x, y, z);
-        const c = new THREE.Color(color);
-        colors.push(c.r, c.g, c.b);
-        velocities.push(new THREE.Vector3());
+        // Map each particle to a corresponding UV coordinate on the texture
+        const u = (index % imageWidth) / imageWidth;
+        const v = Math.floor(index / imageWidth) / imageHeight;
+        uvs.push(u, v);
       });
 
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
 
-      // Load the image texture
-      const textureLoader = new THREE.TextureLoader();
-      const texture = textureLoader.load('rose.png'); // Replace with your image URL
-
-      // Use the texture in the PointsMaterial
       const material = new THREE.PointsMaterial({
-        size: 10, // Adjust size of the particles
+        size: 5, // Adjust size of the particles
         map: texture,
         transparent: true,
-        blending: THREE.AdditiveBlending
+        blending: THREE.AdditiveBlending,
       });
 
       particles = new THREE.Points(geometry, material);
