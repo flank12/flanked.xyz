@@ -12,15 +12,15 @@ fontFace.load().then(function(loadedFace) {
 
 const profiles = {
   cute: {
-    img: 'perk.jpeg',
+    img: 'angel.png',
     desc: 'nigga lover?',
   },
   shy: {
-    img: 'flank.png',
+    img: 'angel.png',
     desc: 'sigma sigma boy',
   },
   motori: {
-    img: 'dorm.png',
+    img: 'angel.png',
     desc: 'muslim and fat',
   }
 };
