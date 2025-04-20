@@ -1,251 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>@instakill</title>
-  <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
- <script src="sparkle.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: url('sigmabg.png') no-repeat center center fixed;
-      background-size: cover;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      text-align: center;
-      transition: background-image 0.5s ease-in-out;
-      font-family: monospace;
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .container {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      gap: 30px;
-    }
-
-    .member-card {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid grey;
-      padding: 20px;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      width: 200px;
-    }
-
-    .member-card:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 2px solid grey;
-    }
-
-    a {
-      color: white;
-      text-decoration: none;
-    }
-
-    h2, p {
-      margin: 10px 0;
-    }
-
-    #enter-gate {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(100, 100, 100, 0.4);
-      backdrop-filter: blur(3px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      transition: opacity 0.5s ease;
-      cursor: pointer;
-    }
-
-    .enter-text {
-      color: white;
-      font-size: 2rem;
-      font-family: monospace;
-      pointer-events: none;
-      user-select: none;
-    }
-
-    #enter-gate.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* Disable background until the overlay is pressed */
-    body.paused {
-      background: none;
-    }
-  </style>
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>instakill.cc</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="loading.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="enter-gate">
-    <div class="enter-text">Enter</div>
+
+  <div id="boot-screen">
+    <div class="scanline"></div>
+    <div class="boot-sequence">
+      <div class="header">
+        <div class="logo">
+          <img src="skull.png" alt="INSTAKILL OS Logo">
+        </div>
+        <div class="version">build_x64_23.58</div>
+        <div class="system-info">arch=x86_64 platform=efi secure_boot=enabled kvm=active</div>
+      </div>
+
+      <div class="boot-log info" style="animation-delay: 0.5s">Loading kernel modules...</div>
+      <div class="boot-log success" style="animation-delay: 1s">CPU: AMD Ryzen 9 7950X detected at 5.7 GHz</div>
+      <div class="boot-log success" style="animation-delay: 1.5s">Memory: 64GB DDR5-6000 CL30 initialized</div>
+
+      <div class="memory-check">
+        <div class="boot-log info" style="animation-delay: 2s">Running memory diagnostic...</div>
+        <script>
+          for (let i = 0; i < 100; i++) {
+            const block = document.createElement('div');
+            block.className = 'memory-block';
+            block.style.animationDelay = (2 + i * 0.02) + 's';
+            document.write(block.outerHTML);
+          }
+        </script>
+      </div>
+
+      <div class="boot-log success" style="animation-delay: 3s">Initializing PCI devices...</div>
+      <div class="boot-log success" style="animation-delay: 3.2s">Loading system drivers: nvidia.ko, audio.ko, net.ko</div>
+      <div class="boot-log warning" style="animation-delay: 3.4s">ACPI: Temperature threshold warning (CPU: 75°C)</div>
+      <div class="boot-log info" style="animation-delay: 3.6s">Starting system services [1/3]...</div>
+
+      <div class="progress">
+        <div class="progress-bar"></div>
+      </div>
+
+      <div class="status">SYSTEM READY</div>
+      <div class="click-prompt">click to continue</div>
+    </div>
   </div>
 
-  <div class="overlay"></div>
-  <div class="container">
-    <div class="member-card" data-index="0">
-      <img src="sigmaboy.png" class="avatar" />
-      <h2 class="binary-text" data-text="Flank">Loading...</h2>
-      <p class="binary-text" data-text="Sigma boy.">Loading...</p>
-      <a href="https://t.me/flank155">t.me/flank</a>
+  <div id="click-text"></div>
+
+  <div id="content-wrapper" style="display: none; filter: blur(5px);">
+    <div id="logo">
+      <img src="angel.png" alt="Logo">
+      <div id="logo-text">instakill.cc</div>
     </div>
-    <div class="member-card" data-index="1">
-      <img src="monopoly.gif" class="avatar" />
-      <h2 class="binary-text" data-text="Decoy">Loading...</h2>
-      <p class="binary-text" data-text="#1 Fed dodger.">Loading...</p>
-      <a href="https://t.me/decoy95">t.me/decoy</a>
-    </div>
-    <div class="member-card" data-index="2">
-      <img src="dormpfp.png" class="avatar" />
-      <h2 class="binary-text" data-text="Dorm">Loading...</h2>
-      <p class="binary-text" data-text="Fatass">Loading...</p>
-      <a href="https://t.me/pleinnmm">t.me/plein</a>
+
+    <div id="main-content">
+      <div id="names-list">
+        <div class="profile-name" data-name="cute">perk</div>
+        <div class="profile-name" data-name="shy">flank</div>
+        <div class="profile-name" data-name="motori">dorm</div>
+      </div>
+
+      <div id="profile-display">
+        <img id="profile-pic" src="" alt="Profile">
+        <p id="profile-desc"></p>
+      </div>
     </div>
   </div>
 
-  <audio id="audio0" src="audio.mp3"></audio>
-  <audio id="audio1" src="audio2.mp3"></audio>
-  <audio id="audio2" src="audio3.mp3"></audio>
+  <button id="player-toggle">MUSIC</button>
 
-  <script>
-    const audios = [
-      document.getElementById('audio0'),
-      document.getElementById('audio1'),
-      document.getElementById('audio2')
-    ];
+  <div id="audio-player">
+    <div class="title-bar">
+      <span>INSTAKILL.CC Media Player</span>
+      <div class="close-button">×</div>
+    </div>
+    <div class="controls">
+      <button id="prev-btn">⏮</button>
+      <button id="play-btn">▶</button>
+      <button id="next-btn">⏭</button>
+      <button id="shuffle-btn">⤮</button>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="song-list"></div>
+  </div>
 
-    const backgrounds = [
-      "url('sigmabg.png')",
-      "url('decoybg.png')",
-      "url('girl.png')"
-    ];
+  <audio id="music"></audio>
 
-    const titles = [
-      "instakill; flank",
-      "instakill; decoy",
-      "instakill; dorm"
-    ];
+  <script src="glitch.js"></script>
+  <script src="boot.js"></script>
+  <script src="members.js"></script>
+  <script src="audioplayer.js"></script>
+  <script src="highlight.js"></script>
+  <script disable-devtool-auto="" src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
 
-    let currentAudio = null;
-    let isHovering = false;
 
-    document.querySelectorAll('.member-card').forEach(card => {
-      const index = parseInt(card.getAttribute('data-index'));
-
-      card.addEventListener('mouseenter', () => {
-        isHovering = true;
-
-        if (!document.body.classList.contains('paused')) {
-          document.body.style.backgroundImage = backgrounds[index];
-
-          if (currentAudio && !currentAudio.paused) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
-          }
-          currentAudio = audios[index];
-          currentAudio.play();
-
-          document.title = titles[index];
-        }
-      });
-
-      card.addEventListener('mouseleave', () => {
-        isHovering = false;
-        setTimeout(() => {
-          if (!isHovering) {
-            if (!document.body.classList.contains('paused')) {
-              document.body.style.backgroundImage = "url('girl.png')";
-              if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-              }
-              document.title = "@instakill";
-            }
-          }
-        }, 150);
-      });
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.binary-text').forEach(el => {
-        const text = el.getAttribute('data-text');
-        let index = 0;
-        const interval = setInterval(() => {
-          if (index <= text.length) {
-            const real = text.substring(0, index);
-            const rand = Array.from({ length: text.length - index }, () => Math.round(Math.random())).join('');
-            el.textContent = real + rand;
-            index++;
-          } else {
-            clearInterval(interval);
-          }
-        }, 100);
-      });
-    });
-
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) {
-        document.title = "Come back Loser!";
-      } else {
-        document.title = "@instakill";
-      }
-    });
-
-    let audioEnabled = false;
-    const gate = document.getElementById('enter-gate');
-
-    gate.addEventListener('click', () => {
-      if (!audioEnabled) {
-        audios.forEach(audio => {
-          audio.muted = true;
-          audio.play().then(() => {
-            audio.pause();
-            audio.currentTime = 0;
-            audio.muted = false;
-          });
-        });
-        audioEnabled = true;
-      }
-
-      document.body.classList.remove('paused');
-      gate.classList.add('fade-out');
-    });
-  </script>
-</body>
-</html>
+</body></html>
