@@ -10,9 +10,9 @@ const closeButton = document.querySelector('.close-button');
 const playerToggle = document.getElementById('player-toggle');
 
 const songs = [
-  'Bring Me To Life.mp3',
-  'Вечная жизнь.mp3',
-  'Грезы.mp3',
+  'audio.mp3',
+  'audio2.mp3',
+  'audio3.mp3',
   'Грустная сука.mp3',
   'Зеркало.mp3',
   'Малыш.mp3',
