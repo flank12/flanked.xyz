@@ -1,103 +1,31 @@
-<!DOCTYPE html><html lang="en"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>flank a party?</title>
-  <link rel="icon" type="image/png" href="images/055f25ab9c75e37ea28c2035a74bcaa2-removebg-preview.png">
-  <link rel="stylesheet" href="loading.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>@</title>
   <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script> <!-- particles -->
+  <script src="main.js" defer></script>   <!-- enter/title -->
+  <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
 </head>
 <body>
+  <canvas id="canvas"></canvas>
 
-  <div id="boot-screen">
-    <div class="scanline"></div>
-    <div class="boot-sequence">
-      <div class="header">
-        <div class="logo">
-          <img src="skull.png" alt="INSTAKILL OS Logo">
-        </div>
-        <div class="version">build_x64_23.58</div>
-        <div class="system-info">arch=x86_64 platform=efi secure_boot=enabled kvm=active</div>
-      </div>
-
-      <div class="boot-log info" style="animation-delay: 0.5s">Loading kernel modules...</div>
-      <div class="boot-log success" style="animation-delay: 1s">CPU: AMD Ryzen 9 7950X detected at 5.7 GHz</div>
-      <div class="boot-log success" style="animation-delay: 1.5s">Memory: 64GB DDR5-6000 CL30 initialized</div>
-
-      <div class="memory-check">
-        <div class="boot-log info" style="animation-delay: 2s">Running memory diagnostic...</div>
-        <script>
-          for (let i = 0; i < 100; i++) {
-            const block = document.createElement('div');
-            block.className = 'memory-block';
-            block.style.animationDelay = (2 + i * 0.02) + 's';
-            document.write(block.outerHTML);
-          }
-        </script>
-      </div>
-
-      <div class="boot-log success" style="animation-delay: 3s">Initializing PCI devices...</div>
-      <div class="boot-log success" style="animation-delay: 3.2s">Loading system drivers: nvidia.ko, audio.ko, net.ko</div>
-      <div class="boot-log warning" style="animation-delay: 3.4s">ACPI: Temperature threshold warning (CPU: 75°C)</div>
-      <div class="boot-log info" style="animation-delay: 3.6s">Starting system services [1/3]...</div>
-
-      <div class="progress">
-        <div class="progress-bar"></div>
-      </div>
-
-      <div class="status">SYSTEM BOOTED</div>
-      <div class="click-prompt">click to continue.</div>
-    </div>
+  <div id="topLinks">
+    <a href="https://t.me/decorateable" target="_blank">telegram</a>
+    <a href="https://doxbin.com/flanked" target="_blank">doxbin</a>
   </div>
 
-  <div id="click-text"></div>
+  <div id="enterOverlay" onclick="enterSite()">ENTER</div>
 
-  <div id="content-wrapper" style="display: none; filter: blur(5px);">
-    <div id="logo">
-      <img src="055f25ab9c75e37ea28c2035a74bcaa2-removebg-preview.png" alt="Logo">
-      <div id="logo-text">instakill</div>
-    </div>
-
-    <div id="main-content">
-      <div id="names-list">
-        <div class="profile-name" data-name="cute">perk</div>
-        <div class="profile-name" data-name="shy">net</div>
-        <div class="profile-name" data-name="motori">dorm</div>
-      </div>
-
-      <div id="profile-display">
-        <img id="profile-pic" src="" alt="Profile">
-        <p id="profile-desc"></p>
-      </div>
-    </div>
+  <div id="mainContent">
+    <img src="img/download.gif" alt="Instakill Logo" id="centerImage">
   </div>
 
-  <button id="player-toggle">MUSIC</button>
-
-  <div id="audio-player">
-    <div class="title-bar">
-      <span>INSTAKILL.CC Media Player</span>
-      <div class="close-button">×</div>
-    </div>
-    <div class="controls">
-      <button id="prev-btn">⏮</button>
-      <button id="play-btn">▶</button>
-      <button id="next-btn">⏭</button>
-      <button id="shuffle-btn">⤮</button>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill"></div>
-    </div>
-    <div class="song-list"></div>
-  </div>
-
-  <audio id="music"></audio>
-
-  <script src="glitch.js"></script>
-  <script src="boot.js"></script>
-  <script src="members.js"></script>
-  <script src="audioplayer.js"></script>
-  <script src="highlight.js"></script>
-  <script disable-devtool-auto="" src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
-
-
-</body></html>
+  <audio id="bgMusic" loop muted preload="auto">
+    <source src="audio3.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+</body>
+</html>
