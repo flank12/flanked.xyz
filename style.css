@@ -1,0 +1,79 @@
+@font-face {
+  font-family: 'GothicByte';
+  src: url('fonts/GothicByte.ttf') format('truetype');
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: black;
+  color: white;
+  font-family: 'GothicByte', Arial, sans-serif;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+#topLinks {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  z-index: 2;
+  font-size: 1.5em;
+  display: none;
+}
+
+#topLinks a {
+  color: red;
+  text-decoration: none;
+  margin: 0 15px;
+  transition: color 0.3s ease;
+}
+
+#topLinks a:hover {
+  color: darkred;
+}
+
+#enterOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+  cursor: pointer;
+  z-index: 999;
+  transition: opacity 0.5s ease;
+}
+
+#mainContent {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
+  z-index: 1;
+  position: relative;
+}
+
+#mainContent img {
+  max-width: 30vw;
+  max-height: 30vh;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+audio {
+  display: none;
+}
