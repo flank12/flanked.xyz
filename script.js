@@ -5,7 +5,6 @@ resizeCanvas();
 let particles = [];
 let mouse = { x: 0, y: 0, radius: 120, down: false };
 
-// Resize and input events
 window.addEventListener('resize', resizeCanvas);
 canvas.addEventListener('mousemove', e => {
   mouse.x = e.clientX;
@@ -25,7 +24,6 @@ function resizeCanvas() {
   canvas.height = window.innerHeight;
 }
 
-// Particle class
 class Particle {
   constructor(x, y, color) {
     this.homeX = x;
@@ -50,9 +48,13 @@ class Particle {
     if (dist < mouse.radius) {
       let force = (mouse.radius - dist) / mouse.radius;
       let angle = Math.atan2(my, mx);
-      let multiplier = mouse.down ? 5 : 2;
-      this.vx += Math.cos(angle) * force * multiplier;
-      this.vy += Math.sin(angle) * force * multiplier;
+      if (mouse.down) {
+        this.vx += Math.cos(angle) * force * 5;
+        this.vy += Math.sin(angle) * force * 5;
+      } else {
+        this.vx += Math.cos(angle) * force * 2;
+        this.vy += Math.sin(angle) * force * 2;
+      }
     }
 
     this.vx *= 0.85;
@@ -68,9 +70,17 @@ class Particle {
   }
 }
 
-// Load image and create particles
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let p of particles) {
+    p.update();
+    p.draw();
+  }
+  requestAnimationFrame(animate);
+}
+
 const img = new Image();
-img.src = 'angel.png'; // Adjust path as needed
+img.src = 'angel.png'; // your image
 img.onload = () => {
   const tempCanvas = document.createElement('canvas');
   const tempCtx = tempCanvas.getContext('2d');
@@ -99,13 +109,3 @@ img.onload = () => {
 
   animate();
 };
-
-// Animation loop
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let p of particles) {
-    p.update();
-    p.draw();
-  }
-  requestAnimationFrame(animate);
-}
