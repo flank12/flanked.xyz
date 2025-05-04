@@ -1,111 +1,35 @@
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-resizeCanvas();
-
-let particles = [];
-let mouse = { x: 0, y: 0, radius: 120, down: false };
-
-window.addEventListener('resize', resizeCanvas);
-canvas.addEventListener('mousemove', e => {
-  mouse.x = e.clientX;
-  mouse.y = e.clientY;
-});
-canvas.addEventListener('mousedown', () => mouse.down = true);
-canvas.addEventListener('mouseup', () => mouse.down = false);
-canvas.addEventListener('touchmove', e => {
-  mouse.x = e.touches[0].clientX;
-  mouse.y = e.touches[0].clientY;
-});
-canvas.addEventListener('touchstart', () => mouse.down = true);
-canvas.addEventListener('touchend', () => mouse.down = false);
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+function enterSite() {
+  const overlay = document.getElementById('enterOverlay');
+  overlay.style.opacity = '0';
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    document.getElementById('mainContent').style.display = 'flex';
+    document.getElementById('topLinks').style.display = 'block';
+    const audio = document.getElementById('bgMusic');
+    audio.muted = false;
+    audio.play().catch(e => console.error('Autoplay failed:', e));
+  }, 500);
 }
 
-class Particle {
-  constructor(x, y, color) {
-    this.homeX = x;
-    this.homeY = y;
-    this.x = x + Math.random() * 50 - 25;
-    this.y = y + Math.random() * 50 - 25;
-    this.vx = 0;
-    this.vy = 0;
-    this.color = color;
-    this.size = Math.random() < 0.5 ? 1 : 2;
-  }
+const staticSymbol = "@";
+const dynamicText = "instakill";
+let typedText = "";
+let index = 0;
 
-  update() {
-    let dx = this.homeX - this.x;
-    let dy = this.homeY - this.y;
-    this.vx += dx * 0.02;
-    this.vy += dy * 0.02;
-
-    let mx = this.x - mouse.x;
-    let my = this.y - mouse.y;
-    let dist = Math.sqrt(mx * mx + my * my);
-    if (dist < mouse.radius) {
-      let force = (mouse.radius - dist) / mouse.radius;
-      let angle = Math.atan2(my, mx);
-      if (mouse.down) {
-        this.vx += Math.cos(angle) * force * 5;
-        this.vy += Math.sin(angle) * force * 5;
-      } else {
-        this.vx += Math.cos(angle) * force * 2;
-        this.vy += Math.sin(angle) * force * 2;
-      }
-    }
-
-    this.vx *= 0.85;
-    this.vy *= 0.85;
-
-    this.x += this.vx;
-    this.y += this.vy;
-  }
-
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.size, this.size);
+function typeTitle() {
+  if (index < dynamicText.length) {
+    typedText += dynamicText.charAt(index);
+    document.title = staticSymbol + typedText;
+    index++;
+    setTimeout(typeTitle, 200);
+  } else if (typedText.length > 0) {
+    typedText = typedText.slice(0, -1);
+    document.title = staticSymbol + typedText;
+    setTimeout(typeTitle, 150);
+  } else {
+    index = 0;
+    setTimeout(typeTitle, 500);
   }
 }
 
-const img = new Image();
-img.src = 'ps0gfn17fajy-removebg-preview.png'; // your image
-img.onload = () => {
-  const tempCanvas = document.createElement('canvas');
-  const tempCtx = tempCanvas.getContext('2d');
-  tempCanvas.width = img.width;
-  tempCanvas.height = img.height;
-  tempCtx.drawImage(img, 0, 0);
-
-  const imageData = tempCtx.getImageData(0, 0, img.width, img.height).data;
-
-  for (let y = 0; y < img.height; y += 4) {
-    for (let x = 0; x < img.width; x += 4) {
-      let index = (y * img.width + x) * 4;
-      let r = imageData[index];
-      let g = imageData[index + 1];
-      let b = imageData[index + 2];
-      let a = imageData[index + 3];
-
-      if (a > 128) {
-        let offsetX = (canvas.width - img.width) / 2;
-        let offsetY = (canvas.height - img.height) / 2;
-        let color = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
-        particles.push(new Particle(x + offsetX, y + offsetY, color));
-      }
-    }
-  }
-
-  animate();
-};
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let p of particles) {
-    p.update();
-    p.draw();
-  }
-  requestAnimationFrame(animate);
-}
+window.onload = typeTitle;
