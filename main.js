@@ -3,16 +3,12 @@ function enterSite() {
   overlay.style.opacity = '0';
   setTimeout(() => {
     overlay.style.display = 'none';
-    document.getElementById('mainContent').style.display = 'flex';
     document.getElementById('topLinks').style.display = 'block';
-    const audio = document.getElementById('bgMusic');
-    audio.muted = false;
-    audio.play().catch(e => console.error('Autoplay failed:', e));
   }, 500);
 }
 
 const staticSymbol = "@";
-const dynamicText = "instakill";
+const dynamicText = "net | instakill";
 let typedText = "";
 let index = 0;
 
@@ -23,7 +19,7 @@ function typeTitle() {
     index++;
     setTimeout(typeTitle, 200);
   } else if (typedText.length > 0) {
-    typedText = typedText.slice(0, -1);
+    typedText = typedText.slice(0, typedText.length - 1);
     document.title = staticSymbol + typedText;
     setTimeout(typeTitle, 150);
   } else {
