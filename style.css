@@ -3,7 +3,7 @@
   src: url('Minecraft.ttf') format('truetype');
 }
 
-body {
+body {  
   margin: 0;
   background: #0c0c0c;
   color: #920303;
