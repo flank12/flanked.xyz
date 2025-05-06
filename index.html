@@ -2,21 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>@</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script> 
-  <script src="main.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Net</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preload" href="Minecraft.ttf" as="font" type="font/ttf" crossorigin="anonymous">
   <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
 
-  <div id="topLinks">
-    <a href="https://t.me/decorateable" target="_blank">telegram</a>
-    <a href="https://doxbin.com/user/flanked" target="_blank">doxbin</a>
+  <!-- Enter Screen -->
+  <div id="enter-screen">
+    <button id="enter-btn">ENTER</button>
   </div>
 
-  <div id="enterOverlay" onclick="enterSite()">ENTER</div>
+  <!-- Profile Section (Centered Box) -->
+<div id="profile-container">
+  <pre class="ascii-art">
+    ███▄    █    ▓█████    ▄▄▄█████▓
+    ██ ▀█   █    ▓█   ▀    ▓  ██▒ ▓▒
+   ▓██  ▀█ ██▒   ▒███      ▒ ▓██░ ▒░
+   ▓██▒  ▐▌██▒   ▒▓█  ▄    ░ ▓██▓ ░ 
+   ▒██░   ▓██░   ░▒████▒     ▒██▒ ░ 
+   ░ ▒░   ▒ ▒    ░░ ▒░ ░     ▒ ░░   
+   ░ ░░   ░ ▒░    ░ ░  ░       ░    
+      ░   ░ ░       ░        ░      
+            ░       ░  ░           
+                         
+  </pre>
+  <div id="info-box">
+    <img src="https://files.catbox.moe/3c8x59.jpg" alt="Net" />
+    <p>The true don,</p>
+    <div class="links">
+      <a href="https://t.me/crimecitation" target="_blank">Telegram |</a>
+      <a href="https://doxbin.com/user/flanked" target="_blank">Doxbin</a>
+    </div>
+  </div>
+</div>
+
+  <!-- Music Player -->
+  <div id="music-player">
+    <div class="title-time">
+      <p id="track-title">No track playing</p>
+      <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+    </div>
+    <audio id="audio" preload="none"></audio>
+    <div class="controls">
+      <button onclick="playPause()">▶ / ⏸</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
