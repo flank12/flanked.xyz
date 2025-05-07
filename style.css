@@ -31,6 +31,7 @@ a {
   font-family: 'Minecraft', monospace;
   padding: 1em 2em;
   cursor: pointer;
+  font-size: 7px; 
 }
 #profile-container {
   position: absolute;
