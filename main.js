@@ -1,11 +1,7 @@
 function enterSite() {
-  const overlay = document.getElementById('enterOverlay');
-  overlay.style.opacity = '0';
-  setTimeout(() => {
-    overlay.style.display = 'none';
-    document.getElementById('topLinks').style.display = 'block';
-  }, 500);
-}
+  const overlay = document.getElementById('enter-overlay');
+  overlay.style.display = 'none';
+  toggleMusic(); 
 
 const staticSymbol = "@";
 const dynamicText = "net | instakill";
