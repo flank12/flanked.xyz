@@ -1,14 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&display=swap');
+
 body {
   margin: 0;
   background: black;
   color: white;
-  font-family: 'Minecraft', monospace;
+  font-family: 'Pirata One', monospace;
   overflow: hidden;
-  text-shadow: 0 0 2px #fff; /* CRT glow effect */
   position: relative;
+  animation: crtFlicker 0.1s infinite;
+
+  background-size: cover; 
+  background-position: center; 
+  background-attachment: fixed; 
 }
 
-/* CRT scanlines */
+
 body::before {
   content: "";
   position: fixed;
@@ -18,20 +24,22 @@ body::before {
   height: 100%;
   background-image: repeating-linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.02),
-    rgba(255, 255, 255, 0.02) 1px,
-    transparent 1px,
-    transparent 2px
+    rgba(255, 255, 255, 0.05), 
+    rgba(255, 253, 253, 0.05) 2px, 
+    transparent 2px,
+    transparent 4px 
   );
   pointer-events: none;
   z-index: 99;
 }
 
-@font-face {
-  font-family: 'Minecraft';
-  src: url('minecraft.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+@keyframes crtFlicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.94; 
+  }
 }
 
 a {
@@ -39,8 +47,9 @@ a {
   text-decoration: underline;
 }
 
+/* Enter screen overlay */
 #enter-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -50,19 +59,20 @@ a {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  z-index: 10;
+  z-index: 100;
+  text-align: center;
+  backdrop-filter: blur(2px);
 }
 
 .glitch {
   font-size: 1.2em;
   color: white;
   animation: flicker 2s infinite;
-  text-shadow: 0 0 3px white, 0 0 5px white;
 }
 
 @keyframes flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    opacity: 1;
+    opacity: 0.6;
   }
   20%, 24%, 55% {
     opacity: 0.3;
@@ -70,20 +80,27 @@ a {
 }
 
 #profile-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; 
   text-align: center;
+  z-index: 1;
 }
 
 .ascii-art {
   font-family: monospace;
   white-space: pre;
   font-size: 14px;
-  color: white;
+  color: rgb(151, 150, 150);
   line-height: 1.1;
   margin-bottom: 20px;
+  filter: brightness(1);
 }
 
 #info-box img {
@@ -97,24 +114,15 @@ a {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(26, 25, 25, 0);
   padding: 10px 15px;
-  border-radius: 6px;
   font-size: 0.8em;
   width: 260px;
-  box-shadow: 0 0 5px white;
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(2px);
   color: white;
 }
 
-#music-player button {
-  background: transparent;
-  color: white;
-  border: 1px solid white;
-  padding: 5px 10px;
-  font-family: 'Minecraft', monospace;
-  cursor: pointer;
-}
+
 
 .links {
   margin-top: 10px;
